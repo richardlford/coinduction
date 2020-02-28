@@ -411,7 +411,8 @@ Qed.
 Lemma approx_reach P (P_dec : forall c, P c \/ ~ P c)
   (stuck_dec : StuckDecidable):
   forall c, (forall n, ix_al_reach P c false n) -> reach P c false.
-cofix.
+Proof.
+cofix approx_reach.
 intros c Happrox.
 destruct (stuck_dec c).
 (* Later *)

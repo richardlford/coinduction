@@ -143,7 +143,7 @@ Section TerminationLEM.
     d_step : forall x', R x x' -> diverges x' -> diverges x.
 
   Lemma nonterm_diverges : forall x, ~terminates x R -> diverges x.
-    cofix.
+    cofix nonterm_diverges.
     intros.
     destruct (term_next_EM x).
     destruct H0 as (x' & Hstep & Hx').
@@ -155,7 +155,7 @@ Section TerminationLEM.
   Qed.
 
   Lemma diverge_reaches : forall x, diverges x -> forall P, reaches R x P.
-    intros. revert x H. cofix.
+    intros. revert x H. cofix diverge_reaches.
     destruct 1. apply (rstep H). apply diverge_reaches;assumption.
   Qed.
 

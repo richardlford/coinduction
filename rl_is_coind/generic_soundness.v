@@ -271,7 +271,7 @@ Module Soundness(Sem : ReachabilitySemantics).
     let HC := fresh "HC" in
     intros ? HA HC;
     match goal with
-      | [IHcirc : appcontext C [cons_opt_system] |-_] => idtac
+      | [IHcirc : context C [cons_opt_system] |- _] => idtac
       | _ => repeat match goal with
                         [IH : forall i, system_holds _ i -> _ |- _] =>
                         specialize (IH _ HA HC)
