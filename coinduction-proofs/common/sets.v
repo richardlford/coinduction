@@ -6,6 +6,7 @@ Require Import String.
 Require Import Setoid.
 
 Require Import maps.
+Require Import myconstructors.
 
 Set Implicit Arguments.
 
@@ -16,7 +17,7 @@ Inductive MultiSet (Elt : Type) :=
 | setItem (e : Elt)
 | setJoin (s1 s2 : MultiSet Elt)
 .
-Arguments setEmpty [Elt].
+Arguments setEmpty {Elt}.
 
 Inductive SetEquiv {E : Type} : MultiSet E -> MultiSet E -> Prop :=
 | equivUnit : forall s, SetEquiv (setJoin s setEmpty) s
@@ -65,10 +66,10 @@ end.
 
 Add Parametric Morphism K E : (@keys K E) with
   signature MapEquiv ==> SetEquiv as keys_mor.
-induction 1; try solve[econstructor(eassumption)].
+induction 1; try solve[emyconstructor(eassumption)].
 Qed.
 
 Lemma equivs {Key Elt} (m1 m2 : Map Key Elt) :
   m1 ~= m2 -> SetEquiv (keys m1) (keys m2).
-induction 1;solve[econstructor(eassumption)].
+induction 1;solve[emyconstructor(eassumption)].
 Qed.

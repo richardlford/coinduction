@@ -2,6 +2,7 @@ Require Import maps.
 Require Import String.
 Require Import List.
 Require Import NPeano.
+Require Import FunInd.
 
 Set Implicit Arguments.
 
@@ -160,7 +161,7 @@ Ltac insert x xs :=
   end.
 Ltac index x xs :=
   match xs with
-    | (x :: _) => constr:0
+    | (x :: _) => constr:(0)
     | (?x' :: ?xs) => let ix := index x xs in constr:(S ix)
   end.
 Ltac gatherKeys gathered t :=

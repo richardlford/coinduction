@@ -1,5 +1,6 @@
 Require Import maps.
 Require Import patterns.
+Require Import List.
 
 (* Various tactics for manipulating and simplifying patterns *)
 
@@ -65,7 +66,6 @@ Fixpoint lift (pat : pat_skel) : sorted :=
     | Join l r => merge_sorted (lift l) (lift r)
   end.
 
-Require Import List.
 Definition rebuild (s : sorted) : MapPattern Key Elt :=
   match s with
     | Sorted constraints items lits leaves =>

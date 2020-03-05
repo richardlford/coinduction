@@ -1,4 +1,5 @@
 Require Import proof.
+Require Import myconstructors.
 
 (** A generic proof strategy to go with proof.v *)
 (**
@@ -71,22 +72,25 @@ Ltac generic_run trans_tac step_solver done_solver split_stuck :=
    (though it does check generically if we are already at the
    final goal).
  *)
-Ltac trans_applies code_type := econstructor(match goal with
-  [|- @eq code_type _ _] => reflexivity || fail 1 | _ => idtac end).
+Ltac trans_applies code_type :=
+  emyconstructor ltac:(match goal with
+                [|- @eq code_type _ _] => reflexivity || fail 1 | _ => idtac end).
 Ltac trans_finished := solve[
   let k' := fresh "k'" in let Hk' := fresh "Hk'" in
   intros k' Hk'; eapply ddone; apply Hk'].
 Ltac domain_trans_tac code_type trans_domain_solver trans_use_result :=
-  eapply dtrans;[solve[econstructor(trans_domain_solver)]
-              || econstructor(trans_applies code_type);fail 1|];
+  eapply dtrans;[solve[emyconstructor(trans_domain_solver)]
+              || emyconstructor ltac:(trans_applies code_type);fail 1|];
   instantiate;simpl;try (trans_finished || trans_use_result).
 
 Ltac domain_step code_type trans_domain_solver trans_use_result step_domain_solver split_stuck
-  := generic_step ltac:(domain_trans_tac code_type trans_domain_solver trans_use_result)
-                  ltac:(econstructor(step_domain_solver))
-                  ltac:split_stuck.
+  := generic_step
+       ltac:(domain_trans_tac code_type trans_domain_solver trans_use_result)
+       ltac:(emyconstructor step_domain_solver)
+       ltac:(split_stuck).
+
 Ltac domain_run code_type trans_domain_solver trans_use_result step_domain_solver split_stuck done_tac
   := generic_run ltac:(domain_trans_tac code_type trans_domain_solver trans_use_result)
-                 ltac:(econstructor(step_domain_solver))
-                 ltac:done_tac
-                 ltac:split_stuck.
+                 ltac:(emyconstructor(step_domain_solver))
+                 ltac:(done_tac)
+                 ltac:(split_stuck).

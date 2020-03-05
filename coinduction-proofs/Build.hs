@@ -131,6 +131,6 @@ main = shakeArgsRel shakeOptions{shakeThreads=8, shakeChange=ChangeModtimeAndDig
 
 includes :: String -> [String]
 includes out =
-  ["-I",takeDirectory out
-  ,"-I",takeDirectory1 out
-  ,"-I","common"]
+  ["-R",(takeDirectory out), ""
+  ,"-R",(takeDirectory1 out), ""
+  ,"-R","common", ""]

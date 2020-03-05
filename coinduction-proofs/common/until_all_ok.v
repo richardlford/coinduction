@@ -1,4 +1,5 @@
 Require Import ho_proof_until_gen.
+Require Import myconstructors.
 
 Set Implicit Arguments.
 
@@ -23,19 +24,20 @@ Inductive step (X : Spec) (k : cfg) (R : cfg -> cfg -> Prop) (P : cfg -> Prop) :
 Lemma step_mono : mono step.
 Proof.
   destruct 2. constructor. assumption.
-  apply sstep. assumption. intros. split. Focus 2. apply H.
-  eapply H1. assumption. eapply H1. assumption.
+  apply sstep. assumption. intros. split.
+  2: { apply H. eapply H1. assumption. }
+  eapply H1. assumption.
 Qed.
 
 Lemma until_stable : subspec until (step until).
-Proof. destruct 1; econstructor(assumption). Qed.
+Proof. destruct 1; emyconstructor(assumption). Qed.
 
 CoFixpoint stable_sound (Rules : Spec)
   (Hstable : forall x R P, Rules x R P -> step Rules x R P)
   : sound Rules := fun x R P H =>
 match Hstable _ _ _ H with
-    | sdone pf => rdone _ _ _ pf
-    | sstep not_stuck Hsteps => rstep not_stuck (fun k' Hstep =>
+    | sdone _ _ _ _ pf => rdone _ _ _ pf
+    | @sstep _ _ _ _ not_stuck Hsteps => rstep not_stuck (fun k' Hstep =>
         let (Hpres, Hk') := Hsteps k' Hstep
         in conj Hpres (stable_sound Hstable k' R P Hk'))
 end.

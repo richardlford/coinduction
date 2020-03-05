@@ -1,3 +1,4 @@
+Require Import myconstructors.
 Set Implicit Arguments.
 
 Section relations.
@@ -21,12 +22,12 @@ Inductive step (X : Spec) (k : cfg) (T : cfg -> cfg -> Prop) (P : cfg -> Prop) :
 CoFixpoint stable_sound (Rules : Spec)
   (Hstable : forall x T P, Rules x T P -> step Rules x T P)
   : sound Rules := fun x T P H => match Hstable _ _ _ H with
-    | sdone pf => rdone _ _ _ pf
-    | sstep k' Hstep step_ok H' => rstep Hstep step_ok (stable_sound Hstable _ _ _ H')
+    | sdone _ _ _ _ pf => rdone _ _ _ pf
+    | @sstep _ _ _ _ k' Hstep step_ok H' => rstep Hstep step_ok (stable_sound Hstable _ _ _ H')
 end.
 
 Lemma until_gfp : forall x T P, step until x T P <-> until x T P.
-Proof. split;destruct 1;econstructor(eassumption). Qed.
+Proof. split;destruct 1;emyconstructor(eassumption). Qed.
 
 Inductive trans (X : Spec) (k : cfg) (T : cfg -> cfg -> Prop) (P : cfg -> Prop) : Prop :=
   | drule : X k T P -> trans X k T P

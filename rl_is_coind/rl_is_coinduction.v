@@ -1,5 +1,7 @@
 Require Import proofsystem.
 Require Import coinduction.
+Require generic_ex.
+Import reduction.
 
 Section Semantics.
 
@@ -125,8 +127,6 @@ try eassumption.
 trivial.
 Qed.
 
-Require generic_ex.
-Import reduction.
 
 Section TerminationLEM.
 (* Because the soundness proof mentions termination in various definitions,

@@ -1,4 +1,5 @@
 Require Export ho_proof_gen.
+Require Import myconstructors.
 
 Set Implicit Arguments.
 
@@ -22,16 +23,16 @@ Inductive step (X : Spec) (k : cfg) (P : cfg -> Prop) : Prop :=
 | sstep : forall k', cstep k k' -> X k' P -> step X k P.
 
 Lemma step_mono : mono step.
-Proof. destruct 2;econstructor(solve[eauto using step]). Qed.
+Proof. destruct 2;emyconstructor ltac:(solve[eauto using step]). Qed.
 
 Lemma reaches_stable : subspec reaches (step reaches).
-Proof. destruct 1;econstructor(eassumption). Qed.
+Proof. destruct 1;emyconstructor(eassumption). Qed.
 
 CoFixpoint stable_sound Rules (Hstable : subspec Rules (step Rules)) : sound Rules :=
   fun x P H =>
   match Hstable _ _ H with
-    | sdone pf => rdone _ _ pf
-    | sstep k' Hstep H' =>
+    | sdone _ _ _ pf => rdone _ _ pf
+    | @sstep _ _ _ k' Hstep H' =>
         rstep Hstep (stable_sound Hstable _ _ H')
   end.
 

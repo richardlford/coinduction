@@ -15,6 +15,7 @@
   'proved_sound' is the generalized coinduction theorem also allowing
   the "proof" rules defined in 'trans'.
  *)
+Require Import myconstructors.
 Set Implicit Arguments.
 
 Section relations.
@@ -40,15 +41,15 @@ Inductive step (X : Spec) (k : cfg) (P : cfg -> Prop) : Prop :=
 
 Lemma reaches_stable :
   (forall x P, reaches x P -> step reaches x P).
-Proof. destruct 1;econstructor(eassumption). Qed.
+  Proof. destruct 1;emyconstructor(eassumption). Qed.
 
 CoFixpoint stable_sound (Rules : Spec)
   (Hstable : forall x P, Rules x P -> step Rules x P)
   : sound Rules :=
   fun x P H =>
   match Hstable _ _ H with
-    | sdone pf => rdone _ _ pf
-    | sstep k' Hstep H' =>
+    | sdone _ _ _ pf => rdone _ _ pf
+    | @sstep _ _ _ k' Hstep H' =>
         rstep Hstep (stable_sound Hstable _ _ H')
   end.
 

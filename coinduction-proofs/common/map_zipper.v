@@ -1,3 +1,4 @@
+Require Import FunInd.
 Require Import maps.
 Set Implicit Arguments.
 Set Contextual Implicit.
@@ -52,17 +53,17 @@ Inductive MapZipper (Key Elt : Type) : Type :=
 Fixpoint plug {K E} (z : MapZipper K E) (m : Map K E) : Map K E :=
   match z with
     | Here => m
-    | Left r z' => plug z' m :* r
-    | Right l z' => l :* plug z' m
+    | @Left _ _ r z' => plug z' m :* r
+    | @Right _ _ l z' => l :* plug z' m
   end.
 
 Fixpoint plug' {K E} (z : MapZipper K E) : Map K E :=
   match z with
     | Here => mapEmpty
-    | Left r Here => r
-    | Left r z' => plug' z' :* r
-    | Right l Here => l
-    | Right l z' => l :* plug' z'
+    | @Left _ _ r Here => r
+    | @Left _ _ r z' => plug' z' :* r
+    | @Right _ _ l Here => l
+    | @Right _ _ l z' => l :* plug' z'
   end.
 
 Lemma plug'_plug : forall {K E} (z : MapZipper K E), plug' z ~= plug z mapEmpty.

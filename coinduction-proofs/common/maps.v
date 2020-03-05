@@ -24,10 +24,11 @@ Inductive Map (Key Elt : Type) : Type :=
 | mapItem (k : Key) (v : Elt)
 | mapJoin (m1 m2 : Map Key Elt)
 .
-Arguments mapEmpty [Key Elt].
+Arguments mapEmpty {Key Elt}.
 
 (** ** Map notations
  *)
+Declare Scope Map.
 Delimit Scope Map with Map.
 Bind Scope Map with Map.
 

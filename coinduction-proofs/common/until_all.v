@@ -14,6 +14,7 @@
   without reaching a state in P.
  *)
 
+Require Import myconstructors.
 Set Implicit Arguments.
 
 Section relations.
@@ -38,8 +39,8 @@ CoFixpoint stable_sound (Rules : Spec)
   (Hstable : forall x T P, Rules x T P -> step Rules x T P)
   : sound Rules := fun x T P H =>
 match Hstable _ _ _ H with
-    | sdone pf => rdone _ _ _ pf
-    | sstep not_stuck Hsteps => rstep not_stuck (fun k' Hstep =>
+    | sdone _ _ _ _ pf => rdone _ _ _ pf
+    | sstep  _ _ _ not_stuck Hsteps => rstep not_stuck (fun k' Hstep =>
         let (Hpres, Hk') := Hsteps k' Hstep
         in conj Hpres (stable_sound Hstable k' T P Hk'))
 end.
@@ -54,17 +55,19 @@ Inductive trans (X : Spec) (k : cfg) (T : cfg -> cfg -> Prop) (P : cfg -> Prop) 
   | dstrong : forall (T' : cfg -> cfg -> Prop),
        (forall a b, T' a b -> T a b) -> trans X k T' P -> trans X k T P
   | dtrans' : forall Q, trans X k T Q -> (forall k', Q k' -> trans X k' T P) -> trans X k T P
-  .
+.
 
 Lemma absorb_step : forall X k T P, step (trans X) k T P -> trans X k T P.
-Proof. destruct 1;constructor(solve[firstorder]). Qed.
+Proof. destruct 1;myconstructor ltac:(solve[firstorder]). Qed.
 
 Lemma absorb_step_inner : forall X k T P, trans (step X) k T P -> trans X k T P.
-Proof. induction 1;eauto using trans.
-  destruct H;constructor(solve[firstorder using drule]).
+Proof.
+  induction 1; eauto using trans.
+  destruct H;myconstructor ltac:(solve[firstorder using drule]).
 Qed.
 
 Lemma trans_ok : forall X k T P, trans (step X) k T P -> step (trans X) k T P.
+Proof.
 induction 1;try match goal with [H : step _ _ _ _ |- _] => destruct H end;eauto using step;
 firstorder eauto using trans, absorb_step_inner.
 Qed.

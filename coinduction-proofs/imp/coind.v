@@ -4,6 +4,7 @@ Require Import ZArith.
 Require Import imp.
 Require Import proof.
 Require Import example.
+Require Import myconstructors.
 
 Set Implicit Arguments.
 
@@ -19,10 +20,13 @@ Inductive zero_loop_spec : Spec (stmt * Env) :=
   zero_loop_spec (zero_loop,env)
     (fun cfg' => fst cfg' = skip /\ env_eq (snd cfg') (set env "x" 0)).
 
-Ltac env_eq_tac := intro x;repeat match goal with [H : env_eq _ _ |- _] => specialize (H x) end;
+Ltac env_eq_tac :=
+  let xf := fresh "x" in
+  intro xf;
+  repeat match goal with [H : env_eq _ _ |- _] => specialize (H xf) end;
   unfold set in * |- *;repeat match goal with [|-context[string_dec ?a ?b]] =>
   destruct (string_dec a b);[subst|] end;try congruence.
-Ltac run := repeat first[eapply dtrans;[constructor(simpl;omega) || (constructor;fail 1)|]
+Ltac run := repeat first[eapply dtrans;[myconstructor ltac:(simpl;omega) || (constructor;fail 1)|]
       |eapply ddone;simpl;split;[congruence|try (env_eq_tac;omega)]
       |eapply dstep;[solve[eauto using step_s,step_b,step_e]|]].
 

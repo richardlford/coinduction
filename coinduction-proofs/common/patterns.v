@@ -115,6 +115,7 @@ They are put in a different notation scope, which is automatically
 added in appropriate arguments of the pattern operators,
 so there should be no confusion with maps.
  *)
+Declare Scope MapPattern.
 Delimit Scope MapPattern with pattern.
 Bind Scope MapPattern with MapPattern.
 
@@ -263,7 +264,7 @@ Instance map_pat_equiv_impl_subrelation : forall {Key Elt : Type},
 Proof. firstorder. Qed.
 
 Instance map_pat_equiv_inverse_impl_subrelation : forall {Key Elt : Type},
-  subrelation (@PatEquiv Key Elt) (inverse PatImpl) | 2.
+  subrelation (@PatEquiv Key Elt) (Basics.flip PatImpl) | 2.
 Proof. firstorder. Qed.
 
 (** We also define various morphisms respecting PatImpl *)

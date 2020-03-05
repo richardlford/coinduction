@@ -1,6 +1,11 @@
 *.vo
+*.vos
+*.vok
 *.glob
 *.v.d
+*.d
 dist
 .shake
 *.aux
+*~
+dist-newstyle

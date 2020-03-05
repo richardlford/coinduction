@@ -3,6 +3,7 @@ Require Import Morphisms.
 
 Require Import maps.
 Require Import sets.
+Require Import myconstructors.
 
 Set Implicit Arguments.
 
@@ -125,7 +126,7 @@ Lemma disjointGrow {Elt : Type} (m s1 s2 : MultiSet Elt) :
   disjointFrom m (setJoin s1 s2) -> disjointFrom m s2.
 revert s1 s2.
 induction m;simpl;try tauto.
-intros. contradict H. constructor(assumption).
+intros. contradict H. myconstructor(assumption).
 
 destruct 1.
 rewrite equivCommAssoc in H, H0.

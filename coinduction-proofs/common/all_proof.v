@@ -14,6 +14,8 @@
  nondeterministic languages.
  *)
 
+Require Import myconstructors.
+
 Set Implicit Arguments.
 
 Section relations.
@@ -34,16 +36,16 @@ Inductive step (X : Spec) (k : cfg) (P : cfg -> Prop) : Prop :=
   | sdone : P k -> step X k P
   | sstep : (exists k', cstep k k') ->
             (forall k', cstep k k' -> X k' P) -> step X k P
-  .
+.
 
 Lemma sound_stable : forall x P, reaches x P -> step reaches x P.
-Proof. destruct 1;constructor(assumption). Qed.
+Proof. destruct 1;myconstructor(assumption). Qed.
 
 CoFixpoint stable_sound (Rules : Spec)
   (Hstable : forall x P, Rules x P -> step Rules x P)
   : sound Rules := fun x P H => match Hstable _ _ H with
-    | sdone pf => rdone _ _ pf
-    | sstep prog pres => rstep prog
+    | sdone _ _ _ pf => rdone _ _ pf
+    | @sstep _ _ _ prog pres => rstep prog
        (fun k' Hstep => stable_sound Hstable k' _ (pres k' Hstep))
   end.
 
@@ -60,10 +62,11 @@ Lemma trans_trans (X : Spec) :
 induction 1;eauto using trans.
 Qed.
 
+
 Lemma trans_stable (Rules : Spec) :
   (forall x P, Rules x P -> step (trans Rules) x P)
   -> forall x P, trans Rules x P -> step (trans Rules) x P.
-induction 2;try econstructor(eassumption).
+induction 2;try emyconstructor(eassumption).
 destruct (H _ _ H0);eauto using step,trans_trans.
 Qed.
 

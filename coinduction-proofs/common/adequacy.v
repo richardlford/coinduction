@@ -26,7 +26,7 @@ Definition excluded_middle_termination x :=
 Lemma diverging_reaches : (forall x, excluded_middle_termination x) ->
   forall k, ~Term cstep k -> forall P, reaches cstep k P.
 intros H.
-cofix.
+cofix diverging_reaches.
 intros.
 destruct (H k).
 contradict H0. constructor;assumption. destruct H1.

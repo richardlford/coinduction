@@ -1,5 +1,6 @@
 Require Import String.
 Require Import ZArith.
+Require Import myconstructors.
 
 Set Implicit Arguments.
 
@@ -84,4 +85,4 @@ Inductive trc {A : Set} (R : A -> A -> Prop) : nat -> A -> A -> Prop :=
 
 Definition map_trc {A : Set} {R1 R2 : A -> A -> Prop} (f : forall a b, R1 a b -> R2 a b) :
   forall n a b, trc R1 n a b -> trc R2 n a b.
-Proof. induction 1;econstructor (eauto). Qed.
+Proof. induction 1;emyconstructor (eauto). Qed.

@@ -89,13 +89,13 @@ Proof.
   Ltac T_finish Q := apply T_def with Q;[solve[firstorder]|..|assumption];
    let G:=fresh "G" in intro G;unfold subspec;intros;
    try solve[apply B_def with (Q G);[firstorder..|assumption]].
- Ltac T_solve :=
+  Ltac T_solve :=
      match goal with
      | [|- forall b F A, subspec (@?Q F A) (T b F A) ] => 
                      intros b F A;intro;intros;T_finish Q
      | [|- forall b F A, mono F -> subspec (@?Q F A) (T b F A) ] => 
                      intros b F A HF;intro;intros;T_finish Q
-     | [|- forall b F A, mono F -> forall A, subspec (@?Q F A) (T b F A) ] => 
+     | [|- forall b F A, mono F -> forall A', subspec (@?Q F A') (T b F A') ] => 
                      intros b F HF A;intro;intros;T_finish Q
      end.
   T_solve.
@@ -145,7 +145,9 @@ Lemma Tbot_compat : forall b (X:Spec),
 Proof.
   intros;intro;intros. destruct H0. edestruct H1. 
   assert (mono (fun _ => bot)). firstorder. apply H3.
-  eapply H0. Focus 3. apply H2. firstorder.
+  eapply H0.
+  3:{ apply H2. }
+  firstorder.
   intro;intros. eassumption.
   apply H4 in H5. revert H5. apply H.
   intro;intros. eapply T_def; try eassumption.
@@ -162,7 +164,9 @@ Qed.
 Lemma t_T : forall b A, mono b -> subspec (T b (fun _ => bot) A) (t b A).
 Proof.
   intros;intro;intros.
-  eapply t_def. apply T_mono. Focus 3. eassumption. firstorder.
+  eapply t_def. apply T_mono.
+  3: { eassumption. }
+  firstorder.
   intros;intro;intros. apply Tbot_compat; trivial.
 Qed.
 
@@ -224,7 +228,7 @@ Lemma t_gfp' : forall b (F : Spec -> Spec), mono b -> mono F ->
 Proof.
   intros. assert (subspec (F A) (B b (T b F) A)) by apply H1.  
   assert (forall A, subspec ((T b F) A) (T b (B b (T b F)) A)). (* assumption, mono of T *)
-  intros;intro;intros. eapply T_mono. Focus 3. eapply H3. firstorder. firstorder.
+  intros;intro;intros. eapply T_mono. 3: { eapply H3. } firstorder. firstorder.
   assert (forall A, subspec (T b (B b (T b F)) A) (B b (T b (T b F)) A)).
   intros;intro;intros. apply T_compat. assumption. apply T_mono. eauto. trivial.
   assert (forall A, subspec (B b (T b (T b F)) A) (B b (T b F) A)). (* idempotency of T *)
